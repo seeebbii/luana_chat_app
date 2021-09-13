@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luana_chat_app/views/chat_screens/chat_input_field.dart';
-import 'package:luana_chat_app/views/chat_screens/chat_message.dart';
-
-import 'message.dart';
+import 'package:luana_chat_app/views/chat_screens/message.dart';
 
 class MessageScreen extends StatelessWidget {
   MessageScreen({Key? key, this.title}) : super(key: key);

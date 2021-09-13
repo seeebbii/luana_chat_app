@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luana_chat_app/views/chat_screens/chat_message.dart';
+import 'package:luana_chat_app/models/chat_model.dart';
 
 class TextMessage extends StatelessWidget {
   const TextMessage({
@@ -7,7 +7,7 @@ class TextMessage extends StatelessWidget {
     this.message,
   }) : super(key: key);
 
-  final ChatMessage? message;
+  final ChatModel? message;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class TextMessage extends StatelessWidget {
         color: message!.isSender ? Colors.purple.shade800 : Colors.black,
       ),
       child: Text(
-        message!.text,
+        message.message,
         style: TextStyle(
           color: message!.isSender
               ? Colors.white
