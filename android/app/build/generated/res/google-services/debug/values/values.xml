@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">305062811807-a6v9hm741qlvc8pua0cplfjdqpebbkc5.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">305062811807</string>
+    <string name="google_api_key" translatable="false">AIzaSyAVe-wNiY26Sc4lv39wIa68fQE-83Kf6aQ</string>
+    <string name="google_app_id" translatable="false">1:305062811807:android:e5c71882eb9906442caaaa</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAVe-wNiY26Sc4lv39wIa68fQE-83Kf6aQ</string>
+    <string name="google_storage_bucket" translatable="false">luana-chat-app-251ef.appspot.com</string>
+    <string name="project_id" translatable="false">luana-chat-app-251ef</string>
+</resources>

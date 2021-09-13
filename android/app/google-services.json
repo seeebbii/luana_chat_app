@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "305062811807",
+    "project_id": "luana-chat-app-251ef",
+    "storage_bucket": "luana-chat-app-251ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305062811807:android:e5c71882eb9906442caaaa",
+        "android_client_info": {
+          "package_name": "com.code.luanachatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305062811807-dj6fjgkgu7p5g19b1c36a1h4k506ops3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.code.luanachatapp",
+            "certificate_hash": "e43bb9337d27cc433eb306ea4dc8bcc86df38549"
+          }
+        },
+        {
+          "client_id": "305062811807-a6v9hm741qlvc8pua0cplfjdqpebbkc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVe-wNiY26Sc4lv39wIa68fQE-83Kf6aQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305062811807-a6v9hm741qlvc8pua0cplfjdqpebbkc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
