@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/controllers/chat_controller.dart';
+import 'package:luana_chat_app/models/user_model.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:random_string/random_string.dart';
 
 class ChatInputField extends StatefulWidget {
-  ChatInputField({Key? key, this.title}) : super(key: key);
-  final String? title;
+  ChatInputField({Key? key,required this.user}) : super(key: key);
+  final UserModel user;
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -14,6 +16,7 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   final authController = Get.find<AuthController>();
+  final chatController = Get.find<ChatController>();
 
   String messageId = "";
 
@@ -106,7 +109,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
       Map<String, dynamic> messageInfoMap = {
         "message": message,
-        "sendBy": authController.loggedInUser.value.name!,
+        "sendBy": authController.loggedInUser.value.id!,
         "timeStamp": lastMessageTs,
       };
 
@@ -118,19 +121,19 @@ class _ChatInputFieldState extends State<ChatInputField> {
       Database()
           .addMessage(
           getChatRoomIdByUsernames(
-              widget.title!, authController.loggedInUser.value.name!),
+              widget.user.id!, authController.loggedInUser.value.id!),
           messageId,
           messageInfoMap)
           .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "lastMessage": message,
           "lastMessageTimeStamp": lastMessageTs,
-          "lastMessageSendBy":authController.loggedInUser.value.name!
+          "lastMessageSendBy":authController.loggedInUser.value.id!
         };
 
         Database().updateLastMessageSend(
             getChatRoomIdByUsernames(
-                widget.title!, authController.loggedInUser.value.name!),
+                widget.user.id!, authController.loggedInUser.value.id!),
             lastMessageInfoMap);
 
         if (sendClicked) {

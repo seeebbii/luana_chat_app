@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:luana_chat_app/models/chat_model.dart';
 import 'package:luana_chat_app/models/last_message_model.dart';
+import 'package:luana_chat_app/models/user_model.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:meta/meta.dart';
 
@@ -16,16 +17,28 @@ class ChatController extends GetxController {
   var allMessages = <ChatModel>[].obs;
   final authController = Get.find<AuthController>();
 
+
+  var myChats = <UserModel>[].obs;
+
+
+
   @override
   void onInit() {
     // listOfChatRooms.bindStream(Database().getChatRoomsId());
     // loadLastMessages(userController.user.value.name);
+    // myChatRooms.bindStream(Database().getChatRoomsId()) ;
+    // print(myChatRooms.length);
     super.onInit();
   }
 
+  void loadMyChats(String uid){
+    myChats.bindStream(Database().getChatRoomsId(uid));
+  }
 
-  void loadLastMessages(String myUesername) async{
-    lastMessages.bindStream( Database().getLastMessages(myUesername));
+
+  void loadLastMessages(String uid) async{
+    lastMessages.bindStream( Database().getLastMessages(uid));
+    loadMyChats(uid);
   }
 
   void loadChatMessages(String chatRoomId) async{

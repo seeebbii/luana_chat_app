@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/controllers/chat_controller.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:luana_chat_app/utils/color_const.dart';
 import 'package:luana_chat_app/views/bottom_nav_bar_screens/profile_screen.dart';
@@ -21,13 +22,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final _authController = Get.put(AuthController());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  final chatController = Get.put(ChatController());
   @override
   void initState() {
     if (_authController.currentUser.value?.uid != null) {
       Database().getUser(_authController.currentUser.value!.uid).then((value) {
         _authController.loggedInUser.value = value;
       });
+      chatController.loadMyChats(_authController.currentUser.value!.uid);
+      chatController.loadLastMessages(_authController.currentUser.value!.uid);
     }
     WidgetsBinding.instance!.addObserver(this);
     setStatus('Online');

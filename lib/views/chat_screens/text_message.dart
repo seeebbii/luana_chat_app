@@ -21,12 +21,12 @@ class TextMessage extends StatelessWidget {
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.sendBy ==  authController.currentUser.value!.uid ? Colors.purple.shade800 : Colors.black,
+        color: message!.sendBy !=  authController.currentUser.value!.uid ? Colors.purple.shade800 : Colors.black,
       ),
       child: Text(
         '${message!.message}',
         style: TextStyle(
-          color: message!.sendBy ==  authController.currentUser.value!.uid
+          color: message!.sendBy !=  authController.currentUser.value!.uid
               ? Colors.white
               : Theme.of(context).textTheme.bodyText1!.color,
         ),

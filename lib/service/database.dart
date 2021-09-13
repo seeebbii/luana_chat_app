@@ -39,8 +39,8 @@ class Database {
 
   Future<UserModel> getUser(String uid) async {
     try {
-      DocumentSnapshot doc =
-      await _firestore.collection("users").doc(uid).get();
+      DocumentSnapshot doc = await _firestore.collection("users").doc(uid).get();
+      print(UserModel.fromDocumentSnapshot(doc).email);
       return UserModel.fromDocumentSnapshot(doc);
     } catch (e) {
       debugPrint(e.toString());
@@ -78,13 +78,15 @@ class Database {
     }
   }
 
-  Stream<List<String>> getChatRoomsId(){
+  Stream<List<UserModel>> getChatRoomsId(String uid){
     return _firestore.collection("chatrooms").snapshots().map((elem){
-      List<String> retVal = <String>[];
-      elem.docs.forEach((element){
-        String formattedString = "${element.data()['users'][0]}_${element.data()['users'][1]}";
-        retVal.add(formattedString);
-        print(formattedString);
+      List<UserModel> retVal = <UserModel>[];
+      elem.docs.forEach((element) async {
+        if(element['users'][0] == uid){
+          getUser(element['users'][1]).then((value) => retVal.add(value));
+        }else{
+          getUser(element['users'][0]).then((value) => retVal.add(value));
+        }
       });
       return retVal;
     });
@@ -104,13 +106,12 @@ class Database {
 
 
 
-  Stream<List<LastMessageModel>> getLastMessages(String myUserName){
+  Stream<List<LastMessageModel>> getLastMessages(String uid){
     return _firestore.collection("chatrooms").snapshots().map((event){
       List<LastMessageModel> retVal = <LastMessageModel>[];
       event.docs.forEach((element) {
-        if(element.data()['users'][0] == myUserName){
+        if(element['users'][0] == uid || element['users'][1] == uid){
           retVal.add(LastMessageModel.froDoc(element));
-          // print(LastMessageModel.froDoc(element).lastMessage);
         }
       });
       return retVal;
@@ -120,6 +121,8 @@ class Database {
   Stream<QuerySnapshot> getChatRoomMessagesViaStream(String chatRoomId){
     return _firestore.collection('chatrooms').doc(chatRoomId).collection('chats').orderBy("timeStamp", descending: false).snapshots();
   }
+
+
 
 
 }

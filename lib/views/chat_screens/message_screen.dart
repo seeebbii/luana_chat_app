@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
 import 'package:luana_chat_app/controllers/chat_controller.dart';
 import 'package:luana_chat_app/models/chat_model.dart';
+import 'package:luana_chat_app/models/user_model.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:luana_chat_app/views/chat_screens/chat_input_field.dart';
 import 'package:luana_chat_app/views/chat_screens/message.dart';
 
 class MessageScreen extends StatefulWidget {
-  MessageScreen({Key? key, this.title}) : super(key: key);
-  final String? title;
+  MessageScreen({Key? key, required this.user}) : super(key: key);
+  final UserModel user;
 
   @override
   State<MessageScreen> createState() => _MessageScreenState();
@@ -23,9 +24,9 @@ class _MessageScreenState extends State<MessageScreen> {
 
   createChatRoom() {
     String chatRoomId = getChatRoomIdByUsernames(
-        widget.title!, authController.loggedInUser.value.name!);
+        widget.user.id!, authController.loggedInUser.value.id!);
     Map<String, dynamic> chatRoomInfoMap = {
-      "users": [authController.loggedInUser.value.name!, widget.title!]
+      "users": [widget.user.id!, authController.loggedInUser.value.id!]
     };
     Database().createChatRoom(chatRoomId, chatRoomInfoMap);
   }
@@ -39,7 +40,7 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   getAndSetMessages() async {
-    chatController.loadChatMessages(getChatRoomIdByUsernames(widget.title!, authController.loggedInUser.value.name!));
+    chatController.loadChatMessages(getChatRoomIdByUsernames(widget.user.id!,  authController.loggedInUser.value.id!));
   }
 
 
@@ -58,7 +59,7 @@ class _MessageScreenState extends State<MessageScreen> {
           backgroundColor: Colors.black,
           centerTitle: true,
           title: Text(
-            widget.title!,
+            widget.user.email!,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
@@ -75,7 +76,7 @@ class _MessageScreenState extends State<MessageScreen> {
               ),
             ),),
             ChatInputField(
-              title: widget.title,
+              user: widget.user,
             ),
           ],
         ),
