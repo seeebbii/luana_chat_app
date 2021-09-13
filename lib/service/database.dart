@@ -11,7 +11,7 @@ class Database {
       return false;
     } else {
       DocumentSnapshot doc =
-          await _firestore.collection("users").doc(_user.uid).get();
+      await _firestore.collection("users").doc(_user.uid).get();
       return doc.exists;
     }
   }
@@ -38,7 +38,7 @@ class Database {
   Future<UserModel> getUser(String uid) async {
     try {
       DocumentSnapshot doc =
-          await _firestore.collection("users").doc(uid).get();
+      await _firestore.collection("users").doc(uid).get();
       return UserModel.fromDocumentSnapshot(doc);
     } catch (e) {
       debugPrint(e.toString());

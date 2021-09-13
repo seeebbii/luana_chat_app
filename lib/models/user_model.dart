@@ -25,5 +25,9 @@ class UserModel {
     name = doc['name'];
     email = doc['email'];
     imageUrl = doc['imageUrl'];
+    age = doc['age'];
+    gender = doc['gender'];
+    height = doc['height'];
+    status = doc['status'];
   }
 }
