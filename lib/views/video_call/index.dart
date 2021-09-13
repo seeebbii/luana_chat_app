@@ -47,7 +47,7 @@ class IndexState extends State<IndexPage> {
                     decoration: InputDecoration(
                       errorText:
                           _validateError ? 'Channel name is mandatory' : null,
-                      border: UnderlineInputBorder(
+                      border: const UnderlineInputBorder(
                         borderSide: BorderSide(width: 1),
                       ),
                       hintText: 'Channel name',
