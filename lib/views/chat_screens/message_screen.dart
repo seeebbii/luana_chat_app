@@ -16,7 +16,7 @@ class MessageScreen extends StatelessWidget {
           centerTitle: true,
           title: Text(
             title!,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
         body: Column(
