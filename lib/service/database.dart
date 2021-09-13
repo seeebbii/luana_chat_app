@@ -33,6 +33,7 @@ class Database {
       debugPrint(e.toString());
       return false;
     }
+
   }
 
   Future<UserModel> getUser(String uid) async {
