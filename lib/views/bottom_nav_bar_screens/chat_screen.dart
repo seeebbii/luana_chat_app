@@ -89,7 +89,7 @@ class ChatScreen extends StatelessWidget {
             InkWell(
               onTap: () {
                 Get.to(() => MessageScreen(
-                      title: 'Bela Morena',
+                      title: 'Bela Porche',
                     ));
               },
               child: ListTile(
@@ -98,7 +98,7 @@ class ChatScreen extends StatelessWidget {
                     children: [
                       Container(
                           margin: const EdgeInsets.symmetric(vertical: 5),
-                          child: Text('Bela Morena')),
+                          child: Text('Bela Porche')),
                       Text(
                         'Call me and play with me right now hehe!',
                         style: TextStyle(color: Colors.white70, fontSize: 12),

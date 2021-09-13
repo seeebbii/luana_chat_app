@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/service/database.dart';
+import 'package:random_string/random_string.dart';
 
-class ChatInputField extends StatelessWidget {
+class ChatInputField extends StatefulWidget {
   ChatInputField({Key? key, this.title}) : super(key: key);
   final String? title;
 
   @override
+  State<ChatInputField> createState() => _ChatInputFieldState();
+}
+
+class _ChatInputFieldState extends State<ChatInputField> {
+  final authController = Get.find<AuthController>();
+
+  String messageId = "";
+
+  final messageTextEditingController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const  EdgeInsets.only(
         top: 5,
         bottom: 8,
         left: 8,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.black,
       ),
       child: SafeArea(
@@ -25,28 +40,30 @@ class ChatInputField extends StatelessWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(width: 1, color: Colors.white70)),
-                  child: Icon(Icons.wifi),
+                  child: const Icon(Icons.wifi),
                 )),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   border: Border.all(width: 1, color: Colors.white70)),
-              child: Icon(Icons.translate),
+              child: const Icon(Icons.translate),
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                 ),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Type message",
                         ),
+                        controller: messageTextEditingController,
+
                       ),
                     ),
                     Container(
@@ -54,15 +71,15 @@ class ChatInputField extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(width: 1, color: Colors.white70)),
-                      child: Icon(Icons.emoji_emotions_outlined),
+                      child: const Icon(Icons.emoji_emotions_outlined),
                     ),
-                    SizedBox(width: 8),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           border: Border.all(width: 1, color: Colors.white70)),
-                      child: Icon(Icons.send),
+                      child: IconButton(icon: const Icon(Icons.send), onPressed: () => sendMessage(true),),
                     ),
                   ],
                 ),
@@ -72,5 +89,55 @@ class ChatInputField extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  getChatRoomIdByUsernames(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
+  sendMessage(bool sendClicked) {
+    if (messageTextEditingController.text != "") {
+      String message = messageTextEditingController.text;
+      var lastMessageTs = DateTime.now();
+
+      Map<String, dynamic> messageInfoMap = {
+        "message": message,
+        "sendBy": authController.loggedInUser.value.name!,
+        "timeStamp": lastMessageTs,
+      };
+
+      // messageId
+      if (messageId == "") {
+        messageId = randomAlphaNumeric(12);
+      }
+
+      Database()
+          .addMessage(
+          getChatRoomIdByUsernames(
+              widget.title!, authController.loggedInUser.value.name!),
+          messageId,
+          messageInfoMap)
+          .then((value) {
+        Map<String, dynamic> lastMessageInfoMap = {
+          "lastMessage": message,
+          "lastMessageTimeStamp": lastMessageTs,
+          "lastMessageSendBy":authController.loggedInUser.value.name!
+        };
+
+        Database().updateLastMessageSend(
+            getChatRoomIdByUsernames(
+                widget.title!, authController.loggedInUser.value.name!),
+            lastMessageInfoMap);
+
+        if (sendClicked) {
+          messageTextEditingController.clear();
+          messageId = "";
+        }
+      });
+    }
   }
 }

@@ -92,7 +92,7 @@ class Database {
 
 
   Stream<List<ChatModel>> getChatRoomMessages(String chatRoomId) {
-    return _firestore.collection('chatrooms').doc(chatRoomId).collection('chats').orderBy("timeStamp", descending: true).snapshots().map((event){
+    return _firestore.collection('chatrooms').doc(chatRoomId).collection('chats').orderBy("timeStamp", descending: false).snapshots().map((event){
       List<ChatModel> retVal = <ChatModel>[];
       event.docs.forEach((element){
         retVal.add(ChatModel.fromDoc(element));

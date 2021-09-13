@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:luana_chat_app/controllers/auth_controller.dart';
 import 'package:luana_chat_app/models/chat_model.dart';
 
 class TextMessage extends StatelessWidget {
-  const TextMessage({
+  TextMessage({
     Key? key,
     this.message,
   }) : super(key: key);
 
   final ChatModel? message;
 
+  final authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Obx(() => Container(
       padding: EdgeInsets.symmetric(
         horizontal: 20 * 0.75,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.isSender ? Colors.purple.shade800 : Colors.black,
+        color: message!.sendBy ==  authController.currentUser.value!.uid ? Colors.purple.shade800 : Colors.black,
       ),
       child: Text(
-        message.message,
+        '${message!.message}',
         style: TextStyle(
-          color: message!.isSender
+          color: message!.sendBy ==  authController.currentUser.value!.uid
               ? Colors.white
               : Theme.of(context).textTheme.bodyText1!.color,
         ),
       ),
-    );
+    ));
   }
 }
