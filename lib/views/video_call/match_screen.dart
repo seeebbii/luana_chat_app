@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
-import 'package:luana_chat_app/models/worker_model.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:luana_chat_app/views/video_call/call.dart';
 import 'package:luana_chat_app/views/video_call/index.dart';
+import 'package:luana_chat_app/views/video_call/video_preview.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 class MatchScreen extends StatefulWidget {
   MatchScreen({Key? key}) : super(key: key);
@@ -19,6 +17,32 @@ class MatchScreen extends StatefulWidget {
 
 class _MatchScreenState extends State<MatchScreen> {
   AuthController auth = Get.put(AuthController());
+
+  VideoPlayerController? _videoPlayerController;
+  ChewieController? _chewieController;
+
+  bool loved = false;
+
+  Timer? _timer;
+  int _start = 5;
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
 
   Future<void> onJoin() async {
     await _handleCameraAndMic(Permission.camera);
@@ -31,7 +55,15 @@ class _MatchScreenState extends State<MatchScreen> {
   }
 
   @override
+  void initState() {
+    startTimer();
+    super.initState();
+  }
+
+  @override
   void dispose() {
+    _chewieController!.dispose();
+    _timer!.cancel();
     super.dispose();
   }
 
@@ -66,38 +98,29 @@ class _MatchScreenState extends State<MatchScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Text('Bio'),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.06),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: Text(
-                  'If you don\'t skip for 5 seconds you\'ll be redirected to other user',
+                  'If you don\'t skip or love for 5 seconds you\'ll be redirected to other user',
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Get.to(() => IndexPage());
-                  },
-                  child: Container(
-                    height: 180,
-                    width: 150,
-                    child: Center(
-                        child:
-                            Text('Worker Video Preview\nTap to make a call')),
-                  ),
-                ),
-                Container(
-                  height: 250,
-                  width: 150,
-                  color: Colors.red,
-                ),
-              ],
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.symmetric(vertical: 25),
+              child: Text(
+                '${_start}',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
             ),
+            VideoPreview(
+                videoPlayerController:
+                    VideoPlayerController.asset('assets/videos/video_bio.mp4'),
+                looping: true,
+                autoplay: false),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Center(
