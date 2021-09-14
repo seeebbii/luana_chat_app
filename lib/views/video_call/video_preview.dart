@@ -27,8 +27,9 @@ class _VideoPreviewState extends State<VideoPreview> {
       videoPlayerController: widget.videoPlayerController!,
       aspectRatio: 6 / 9,
       autoInitialize: true,
-      autoPlay: true,
-      looping: true,
+      autoPlay: widget.autoplay!,
+      looping: widget.looping!,
+      showControls: false,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(
@@ -43,6 +44,7 @@ class _VideoPreviewState extends State<VideoPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Chewie(controller: _chewieController!);
+    return RotatedBox(
+        quarterTurns: 3, child: Chewie(controller: _chewieController!));
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/views/video_call/call_screen.dart';
 import 'package:luana_chat_app/views/video_call/index.dart';
 import 'package:luana_chat_app/views/video_call/video_preview.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,10 +25,10 @@ class _MatchScreenState extends State<MatchScreen> {
   bool loved = false;
 
   Timer? _timer;
-  int _start = 5;
+  int _start = 10;
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
+    const oneSec = const Duration(milliseconds: 1000);
     _timer = new Timer.periodic(
       oneSec,
       (Timer timer) {
@@ -99,15 +100,6 @@ class _MatchScreenState extends State<MatchScreen> {
               child: Text('Bio'),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  'If you don\'t skip or love for 5 seconds you\'ll be redirected to other user',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
             Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.symmetric(vertical: 25),
@@ -120,19 +112,24 @@ class _MatchScreenState extends State<MatchScreen> {
               children: [
                 Column(
                   children: [
-                    Center(
-                      child: Container(
-                        height: 300,
-                        width: 200,
-                        child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: VideoPreview(
-                              videoPlayerController:
-                                  VideoPlayerController.asset(
-                                'assets/videos/video_bio.mp4',
-                              ),
-                              looping: true,
-                              autoplay: false),
+                    InkWell(
+                      onTap: () {
+                        Get.to(() => CallScreen());
+                      },
+                      child: Center(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: FittedBox(
+                            fit: BoxFit.fill,
+                            child: VideoPreview(
+                                videoPlayerController:
+                                    VideoPlayerController.asset(
+                                  'assets/videos/video_bio.mp4',
+                                ),
+                                looping: true,
+                                autoplay: true),
+                          ),
                         ),
                       ),
                     ),
@@ -157,8 +154,21 @@ class _MatchScreenState extends State<MatchScreen> {
                 ),
               ],
             ),
+            loved
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Center(
+                      child: Text(
+                        "You liked her. Please wait for her response",
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Center(child: Text(""))),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Center(
                 child: ElevatedButton(
                   child: Text('Skip'),
