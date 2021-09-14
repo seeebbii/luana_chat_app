@@ -116,11 +116,47 @@ class _MatchScreenState extends State<MatchScreen> {
                 style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               ),
             ),
-            VideoPreview(
-                videoPlayerController:
-                    VideoPlayerController.asset('assets/videos/video_bio.mp4'),
-                looping: true,
-                autoplay: false),
+            Stack(
+              children: [
+                Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        height: 300,
+                        width: 200,
+                        child: FittedBox(
+                          fit: BoxFit.cover,
+                          child: VideoPreview(
+                              videoPlayerController:
+                                  VideoPlayerController.asset(
+                                'assets/videos/video_bio.mp4',
+                              ),
+                              looping: true,
+                              autoplay: false),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  ],
+                ),
+                Positioned(
+                  bottom: 25,
+                  left: 140,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      size: 60,
+                      color: loved ? Colors.pink : Colors.white,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        loved = !loved;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Center(

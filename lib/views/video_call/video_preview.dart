@@ -25,7 +25,7 @@ class _VideoPreviewState extends State<VideoPreview> {
   void initState() {
     _chewieController = ChewieController(
       videoPlayerController: widget.videoPlayerController!,
-      aspectRatio: 5 / 8,
+      aspectRatio: 6 / 9,
       autoInitialize: true,
       autoPlay: true,
       looping: true,
