@@ -1,9 +1,17 @@
+import 'dart:ui';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/service/database.dart';
+import 'package:luana_chat_app/views/video_call/call.dart';
+import 'package:agora_rtm/agora_rtm.dart';
 
 class CallScreen extends StatelessWidget {
-  CallScreen({Key? key}) : super(key: key);
+  CallScreen({Key? key, this.userImageUrl, this.uid}) : super(key: key);
+  final String? userImageUrl;
+  final String? uid;
+
   final _authController = Get.put(AuthController());
 
   @override
@@ -16,6 +24,9 @@ class CallScreen extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.cover,
         ),
+        BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.black.withOpacity(0.3))),
         Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -94,10 +105,18 @@ class CallScreen extends StatelessWidget {
                           Icon(Icons.call_end, size: 40, color: Colors.white),
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.green,
-                    child: Icon(Icons.call, size: 40, color: Colors.white),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => CallPage(
+                            channelName: 'newCall',
+                            role: ClientRole.Broadcaster,
+                          ));
+                    },
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.green,
+                      child: Icon(Icons.call, size: 40, color: Colors.white),
+                    ),
                   )
                 ],
               )

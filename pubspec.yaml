@@ -46,6 +46,7 @@ dependencies:
   random_string: any
   video_player: ^2.2.0
   chewie: ^1.2.2
+  agora_rtm: ^1.0.0
 
 dev_dependencies:
   flutter_test:

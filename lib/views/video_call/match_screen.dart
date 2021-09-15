@@ -25,13 +25,11 @@ class _MatchScreenState extends State<MatchScreen> {
   ChewieController? _chewieController;
 
   bool loved = false;
-  
-  
+
   int currentWorker = 0;
-  
 
   Timer? _timer;
-  int _start = 10;
+  int _start = 5;
 
   void startTimer() {
     const oneSec = const Duration(milliseconds: 1000);
@@ -41,12 +39,12 @@ class _MatchScreenState extends State<MatchScreen> {
         if (_start == 0) {
           setState(() {
             timer.cancel();
-            if(workerController.allWorkers.length - 1 == currentWorker){
+            if (workerController.allWorkers.length - 1 == currentWorker) {
               currentWorker = 0;
-            }else{
+            } else {
               ++currentWorker;
             }
-            _start = 10;
+            _start = 5;
             startTimer();
           });
         } else {
@@ -92,114 +90,131 @@ class _MatchScreenState extends State<MatchScreen> {
       ),
       body: SingleChildScrollView(
         child: Obx(() => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('${workerController.allWorkers[currentWorker].status}'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text('Age: ${workerController.allWorkers[currentWorker].age}'),
-                  const SizedBox(width: 15),
-                  Text('Level : ${workerController.allWorkers[currentWorker].email}'),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Bio'),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(vertical: 25),
-              child: Text(
-                '${_start}',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Stack(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      '${workerController.allWorkers[currentWorker].status}'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                          'Age: ${workerController.allWorkers[currentWorker].age}'),
+                      const SizedBox(width: 15),
+                      Text(
+                          'Level : ${workerController.allWorkers[currentWorker].email}'),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Bio'),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+                Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(vertical: 25),
+                  child: Text(
+                    '${_start}',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Stack(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        Get.to(() => CallScreen());
-                      },
-                      child: Center(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          child: FittedBox(
-                            fit: BoxFit.fill,
-                            child: workerController.allWorkers[currentWorker].imageUrl != '' || workerController.allWorkers[currentWorker].imageUrl != null ? Image.network('${workerController.allWorkers[currentWorker].imageUrl}') : Image.asset('assets/images/banner.png'),
+                    Center(
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Get.to(() => CallScreen(
+                                    uid: workerController
+                                        .allWorkers[currentWorker].id,
+                                  ));
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.35,
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: FittedBox(
+                                fit: BoxFit.fill,
+                                child: workerController
+                                                .allWorkers[currentWorker]
+                                                .imageUrl ==
+                                            '' ||
+                                        workerController
+                                                .allWorkers[currentWorker]
+                                                .imageUrl ==
+                                            null
+                                    ? Image.network(
+                                        'https://i.pinimg.com/564x/6f/de/85/6fde85b86c86526af5e99ce85f57432e.jpg')
+                                    : Image.network(
+                                        '${workerController.allWorkers[currentWorker].imageUrl}'),
 
-                              // VideoPreview(
-                              //     videoPlayerController:
-                              //     VideoPlayerController.asset(
-                              //       'assets/videos/video_bio.mp4',
-                              //     ),
-                              //     looping: true,
-                              //     autoplay: true)
+                                // VideoPreview(
+                                //     videoPlayerController:
+                                //     VideoPlayerController.asset(
+                                //       'assets/videos/video_bio.mp4',
+                                //     ),
+                                //     looping: true,
+                                //     autoplay: true)
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.05),
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                    Positioned(
+                      bottom: 25,
+                      left: 140,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: loved ? Colors.pink : Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            loved = !loved;
+                          });
+                        },
+                      ),
+                    ),
                   ],
                 ),
-                Positioned(
-                  bottom: 25,
-                  left: 140,
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.favorite,
-                      size: 60,
-                      color: loved ? Colors.pink : Colors.white,
+                loved
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Center(
+                          child: Text(
+                            "You liked her. Please wait for her response",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : const Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Center(child: Text(""))),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Center(
+                    child: ElevatedButton(
+                      child: const Text('Skip'),
+                      onPressed: () {
+                        setState(() {
+                          _start = 0;
+                        });
+                      },
                     ),
-                    onPressed: () {
-                      setState(() {
-                        loved = !loved;
-                      });
-                    },
                   ),
                 ),
               ],
-            ),
-            loved
-                ? const Padding(
-              padding:  EdgeInsets.symmetric(vertical: 20),
-              child: Center(
-                child: Text(
-                  "You liked her. Please wait for her response",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )
-                : const Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Center(child: Text(""))),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Center(
-                child: ElevatedButton(
-                  child: const Text('Skip'),
-                  onPressed: () {
-                    setState(() {
-                      _start = 0;
-                    });
-                  },
-                ),
-              ),
-            ),
-          ],
-        )),
+            )),
       ),
     );
   }
-  
-  
 }

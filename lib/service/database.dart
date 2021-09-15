@@ -13,7 +13,7 @@ class Database {
       return false;
     } else {
       DocumentSnapshot doc =
-      await _firestore.collection("users").doc(_user.uid).get();
+          await _firestore.collection("users").doc(_user.uid).get();
       return doc.exists;
     }
   }
@@ -39,7 +39,8 @@ class Database {
 
   Future<UserModel> getUser(String uid) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection("users").doc(uid).get();
+      DocumentSnapshot doc =
+          await _firestore.collection("users").doc(uid).get();
       print(UserModel.fromDocumentSnapshot(doc).email);
       return UserModel.fromDocumentSnapshot(doc);
     } catch (e) {
@@ -48,8 +49,11 @@ class Database {
     }
   }
 
-  Stream<List<UserModel>> getAllUsers(){
-    return _firestore.collection("users").snapshots().map((QuerySnapshot query){
+  Stream<List<UserModel>> getAllUsers() {
+    return _firestore
+        .collection("users")
+        .snapshots()
+        .map((QuerySnapshot query) {
       List<UserModel> retVal = <UserModel>[];
       query.docs.forEach((element) {
         retVal.add(UserModel.fromDocumentSnapshot(element));
@@ -58,33 +62,48 @@ class Database {
     });
   }
 
-  Future addMessage(String chatRoomId, String messageId, Map<String, dynamic>  messageInfo) async {
-    return _firestore.collection("chatrooms").doc(chatRoomId).collection("chats").doc(messageId).set(messageInfo);
+  Future addMessage(String chatRoomId, String messageId,
+      Map<String, dynamic> messageInfo) async {
+    return _firestore
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .collection("chats")
+        .doc(messageId)
+        .set(messageInfo);
   }
 
-  updateLastMessageSend(String chatRoomId, Map<String, dynamic> lastMessageMap){
-    return _firestore.collection("chatrooms").doc(chatRoomId).update(lastMessageMap);
+  updateLastMessageSend(
+      String chatRoomId, Map<String, dynamic> lastMessageMap) {
+    return _firestore
+        .collection("chatrooms")
+        .doc(chatRoomId)
+        .update(lastMessageMap);
   }
 
-  createChatRoom(String chatRoomId, Map<String, dynamic>  chatRoomInfoMap) async {
-    final snapShot = await _firestore.collection("chatrooms").doc(chatRoomId).get();
+  createChatRoom(
+      String chatRoomId, Map<String, dynamic> chatRoomInfoMap) async {
+    final snapShot =
+        await _firestore.collection("chatrooms").doc(chatRoomId).get();
 
-    if(snapShot.exists){
+    if (snapShot.exists) {
       // Chat room exists
       return true;
-    }else{
+    } else {
       // Create chat room
-      return _firestore.collection("chatrooms").doc(chatRoomId).set(chatRoomInfoMap);
+      return _firestore
+          .collection("chatrooms")
+          .doc(chatRoomId)
+          .set(chatRoomInfoMap);
     }
   }
 
-  Stream<List<UserModel>> getChatRoomsId(String uid){
-    return _firestore.collection("chatrooms").snapshots().map((elem){
+  Stream<List<UserModel>> getChatRoomsId(String uid) {
+    return _firestore.collection("chatrooms").snapshots().map((elem) {
       List<UserModel> retVal = <UserModel>[];
       elem.docs.forEach((element) async {
-        if(element['users'][0] == uid){
+        if (element['users'][0] == uid) {
           getUser(element['users'][1]).then((value) => retVal.add(value));
-        }else{
+        } else {
           getUser(element['users'][0]).then((value) => retVal.add(value));
         }
       });
@@ -92,25 +111,27 @@ class Database {
     });
   }
 
-
   Stream<List<ChatModel>> getChatRoomMessages(String chatRoomId) {
-    return _firestore.collection('chatrooms').doc(chatRoomId).collection('chats').orderBy("timeStamp", descending: false).snapshots().map((event){
+    return _firestore
+        .collection('chatrooms')
+        .doc(chatRoomId)
+        .collection('chats')
+        .orderBy("timeStamp", descending: false)
+        .snapshots()
+        .map((event) {
       List<ChatModel> retVal = <ChatModel>[];
-      event.docs.forEach((element){
+      event.docs.forEach((element) {
         retVal.add(ChatModel.fromDoc(element));
       });
       return retVal;
     });
   }
 
-
-
-
-  Stream<List<LastMessageModel>> getLastMessages(String uid){
-    return _firestore.collection("chatrooms").snapshots().map((event){
+  Stream<List<LastMessageModel>> getLastMessages(String uid) {
+    return _firestore.collection("chatrooms").snapshots().map((event) {
       List<LastMessageModel> retVal = <LastMessageModel>[];
       event.docs.forEach((element) {
-        if(element['users'][0] == uid || element['users'][1] == uid){
+        if (element['users'][0] == uid || element['users'][1] == uid) {
           retVal.add(LastMessageModel.froDoc(element));
         }
       });
@@ -118,11 +139,12 @@ class Database {
     });
   }
 
-  Stream<QuerySnapshot> getChatRoomMessagesViaStream(String chatRoomId){
-    return _firestore.collection('chatrooms').doc(chatRoomId).collection('chats').orderBy("timeStamp", descending: false).snapshots();
+  Stream<QuerySnapshot> getChatRoomMessagesViaStream(String chatRoomId) {
+    return _firestore
+        .collection('chatrooms')
+        .doc(chatRoomId)
+        .collection('chats')
+        .orderBy("timeStamp", descending: false)
+        .snapshots();
   }
-
-
-
-
 }
