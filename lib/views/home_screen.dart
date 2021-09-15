@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
 import 'package:luana_chat_app/controllers/chat_controller.dart';
+import 'package:luana_chat_app/controllers/worker_controller.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:luana_chat_app/utils/color_const.dart';
 import 'package:luana_chat_app/views/bottom_nav_bar_screens/profile_screen.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final _authController = Get.put(AuthController());
+  final workerController = Get.put(WorkerController());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final chatController = Get.put(ChatController());
   @override
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed && _authController.currentUser.value?.uid != null) {
       setStatus('Online');
     } else {
       setStatus('Offline');
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void setStatus(String status) async {
     await _firestore
         .collection('users')
-        .doc(_authController.currentUser.value!.uid)
+        .doc(_authController.currentUser.value?.uid)
         .update({
       'status': status,
     });

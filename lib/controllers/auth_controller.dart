@@ -13,6 +13,7 @@ import 'dart:convert' as convert;
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final currentUser = FirebaseAuth.instance.currentUser.obs;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var loggedInUser = UserModel().obs;
   bool isLoading = false;
   Object? onlineUser = null.obs;
@@ -163,6 +164,12 @@ class AuthController extends GetxController {
 
   void logOut() async {
     try {
+      await _firestore
+          .collection('users')
+          .doc(currentUser.value?.uid)
+          .update({
+        'status': 'Offline',
+      });
       await googleSignIn.signOut();
       await facebookLogin.logOut();
       await _auth.signOut();

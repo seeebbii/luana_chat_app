@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/controllers/worker_controller.dart';
 import 'package:luana_chat_app/views/video_call/call_screen.dart';
 import 'package:luana_chat_app/views/video_call/index.dart';
 import 'package:luana_chat_app/views/video_call/video_preview.dart';
@@ -18,23 +19,35 @@ class MatchScreen extends StatefulWidget {
 
 class _MatchScreenState extends State<MatchScreen> {
   AuthController auth = Get.put(AuthController());
+  final workerController = Get.find<WorkerController>();
 
   VideoPlayerController? _videoPlayerController;
   ChewieController? _chewieController;
 
   bool loved = false;
+  
+  
+  int currentWorker = 0;
+  
 
   Timer? _timer;
   int _start = 10;
 
   void startTimer() {
     const oneSec = const Duration(milliseconds: 1000);
-    _timer = new Timer.periodic(
+    _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
         if (_start == 0) {
           setState(() {
             timer.cancel();
+            if(workerController.allWorkers.length - 1 == currentWorker){
+              currentWorker = 0;
+            }else{
+              ++currentWorker;
+            }
+            _start = 10;
+            startTimer();
           });
         } else {
           setState(() {
@@ -78,20 +91,20 @@ class _MatchScreenState extends State<MatchScreen> {
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
-        child: Column(
+        child: Obx(() => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('${auth.onlineUser.toString()}'),
+              child: Text('${workerController.allWorkers[currentWorker].status}'),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Text('Age'),
-                  SizedBox(width: 15),
-                  Text('Level'),
+                  Text('Age: ${workerController.allWorkers[currentWorker].age}'),
+                  const SizedBox(width: 15),
+                  Text('Level : ${workerController.allWorkers[currentWorker].email}'),
                 ],
               ),
             ),
@@ -122,13 +135,15 @@ class _MatchScreenState extends State<MatchScreen> {
                           width: MediaQuery.of(context).size.width * 0.7,
                           child: FittedBox(
                             fit: BoxFit.fill,
-                            child: VideoPreview(
-                                videoPlayerController:
-                                    VideoPlayerController.asset(
-                                  'assets/videos/video_bio.mp4',
-                                ),
-                                looping: true,
-                                autoplay: true),
+                            child: workerController.allWorkers[currentWorker].imageUrl != '' || workerController.allWorkers[currentWorker].imageUrl != null ? Image.network('${workerController.allWorkers[currentWorker].imageUrl}') : Image.asset('assets/images/banner.png'),
+
+                              // VideoPreview(
+                              //     videoPlayerController:
+                              //     VideoPlayerController.asset(
+                              //       'assets/videos/video_bio.mp4',
+                              //     ),
+                              //     looping: true,
+                              //     autoplay: true)
                           ),
                         ),
                       ),
@@ -155,30 +170,36 @@ class _MatchScreenState extends State<MatchScreen> {
               ],
             ),
             loved
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Center(
-                      child: Text(
-                        "You liked her. Please wait for her response",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Center(child: Text(""))),
+                ? const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 20),
+              child: Center(
+                child: Text(
+                  "You liked her. Please wait for her response",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+                : const Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: Text(""))),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Center(
                 child: ElevatedButton(
-                  child: Text('Skip'),
-                  onPressed: () {},
+                  child: const Text('Skip'),
+                  onPressed: () {
+                    setState(() {
+                      _start = 0;
+                    });
+                  },
                 ),
               ),
             ),
           ],
-        ),
+        )),
       ),
     );
   }
+  
+  
 }
