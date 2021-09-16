@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
+import 'package:luana_chat_app/controllers/liked_by_controller.dart';
+import 'package:luana_chat_app/controllers/my_liked_controller.dart';
 import 'package:luana_chat_app/controllers/worker_controller.dart';
+import 'package:luana_chat_app/service/database.dart';
 import 'package:luana_chat_app/views/video_call/call_screen.dart';
 import 'package:luana_chat_app/views/video_call/index.dart';
 import 'package:luana_chat_app/views/video_call/video_preview.dart';
@@ -20,9 +23,11 @@ class MatchScreen extends StatefulWidget {
 class _MatchScreenState extends State<MatchScreen> {
   AuthController auth = Get.put(AuthController());
   final workerController = Get.find<WorkerController>();
+  final likedByController = Get.find<LikedByController>();
+  final myLikedController = Get.find<MyLikedController>();
 
   VideoPlayerController? _videoPlayerController;
-  ChewieController? _chewieController;
+  // ChewieController? _chewieController;
 
   bool loved = false;
 
@@ -32,7 +37,21 @@ class _MatchScreenState extends State<MatchScreen> {
   int _start = 5;
 
   void startTimer() {
-    const oneSec = const Duration(milliseconds: 1000);
+
+    if(myLikedController.myLiked.where((val) => val.id == workerController.allWorkers[currentWorker].id).isNotEmpty){
+      setState(() {
+        ++currentWorker;
+      });
+    }
+
+    if(myLikedController.myLiked.where((val) => val.id == workerController.allWorkers[currentWorker].id).isNotEmpty && workerController.allWorkers.length - 1 == currentWorker){
+      setState(() {
+        currentWorker = 0;
+      });
+    }
+
+
+    const oneSec = Duration(milliseconds: 1000);
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
@@ -44,6 +63,7 @@ class _MatchScreenState extends State<MatchScreen> {
             } else {
               ++currentWorker;
             }
+
             _start = 5;
             startTimer();
           });
@@ -74,8 +94,9 @@ class _MatchScreenState extends State<MatchScreen> {
 
   @override
   void dispose() {
-    _chewieController!.dispose();
-    _timer!.cancel();
+    // _chewieController!.dispose();
+      _timer?.cancel();
+      _start = 5;
     super.dispose();
   }
 
@@ -175,12 +196,15 @@ class _MatchScreenState extends State<MatchScreen> {
                         icon: Icon(
                           Icons.favorite,
                           size: 60,
-                          color: loved ? Colors.pink : Colors.white,
+                          color: loved ? Colors.red : Colors.grey,
                         ),
                         onPressed: () {
+                          Database().likeUser(auth.currentUser.value!.uid, workerController.allWorkers[currentWorker].id!);
                           setState(() {
-                            loved = !loved;
+                            _start = 0;
+                            _timer?.cancel();
                           });
+                          startTimer();
                         },
                       ),
                     ),

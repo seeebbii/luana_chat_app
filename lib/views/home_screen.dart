@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luana_chat_app/controllers/auth_controller.dart';
 import 'package:luana_chat_app/controllers/chat_controller.dart';
+import 'package:luana_chat_app/controllers/liked_by_controller.dart';
+import 'package:luana_chat_app/controllers/my_liked_controller.dart';
 import 'package:luana_chat_app/controllers/worker_controller.dart';
 import 'package:luana_chat_app/service/database.dart';
 import 'package:luana_chat_app/utils/color_const.dart';
@@ -25,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final workerController = Get.put(WorkerController());
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final chatController = Get.put(ChatController());
+  final likedByController = Get.put(LikedByController());
+  final myLikedController = Get.put(MyLikedController());
+
   @override
   void initState() {
     if (_authController.currentUser.value?.uid != null) {

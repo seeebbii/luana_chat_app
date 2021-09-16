@@ -41,7 +41,6 @@ class Database {
     try {
       DocumentSnapshot doc =
           await _firestore.collection("users").doc(uid).get();
-      print(UserModel.fromDocumentSnapshot(doc).email);
       return UserModel.fromDocumentSnapshot(doc);
     } catch (e) {
       debugPrint(e.toString());
@@ -147,4 +146,48 @@ class Database {
         .orderBy("timeStamp", descending: false)
         .snapshots();
   }
+
+  Stream<List<UserModel>> getLikedBy(String uid) {
+
+    return _firestore.collection('users').doc(uid).collection("likedby").orderBy("timestamp", descending: false).snapshots().map((elem) {
+      List<UserModel> retVal = <UserModel>[];
+      elem.docs.forEach((element) async {
+        if (element['liked'] == true) {
+          getUser(element['likedBy']).then((value) => retVal.add(value));
+        }
+      });
+      return retVal;
+    });
+  }
+  
+  likeUser(String myUid, String userUid){
+    _firestore.collection('users').doc(userUid).collection('likedby').doc(userUid).set({
+      "liked" : true,
+      "timestamp" : DateTime.now(),
+      "uid" : userUid,
+      "likedBy" : myUid
+    });
+
+    return _firestore.collection('users').doc(myUid).collection('myliked').doc(userUid).set({
+      "liked" : true,
+      "timestamp" : DateTime.now(),
+      "uid" : userUid,
+    });
+
+  }
+
+
+  Stream<List<UserModel>> getMyLiked(String uid) {
+    return _firestore.collection('users').doc(uid).collection("myliked").orderBy("timestamp", descending: false).snapshots().map((elem) {
+      List<UserModel> retVal = <UserModel>[];
+
+      elem.docs.forEach((element) async {
+        if (element['liked'] == true) {
+          getUser(element['uid']).then((value) => retVal.add(value));
+        }
+      });
+      return retVal;
+    });
+  }
+
 }
