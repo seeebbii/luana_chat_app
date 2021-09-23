@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.code.luanachatapp">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="luana_chat_app"
         android:icon="@mipmap/ic_launcher">
@@ -47,5 +50,5 @@
     </activity>
 
     </application>
-     <uses-permission android:name="android.permission.INTERNET"/>
+
 </manifest>
